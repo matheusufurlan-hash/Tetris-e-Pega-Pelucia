@@ -5,34 +5,27 @@ import br.com.davidbuzatto.jsge.core.engine.EngineFrame;
 import br.com.davidbuzatto.jsge.geom.Rectangle;
 import java.awt.Color;
 
-/**
- * Um cartão do menu: a prévia animada, o nome do jogo e uma explicação da
- * estrutura de dados que ele usa.
- *
- * @author Yoná Maia & Matheus Ubinha
- */
 public class Cartao {
-
     public static final double LARGURA = 320;
     public static final double ALTURA = 280;
     private static final double MARGEM = 14;
     public static final double LARGURA_PREVIA = LARGURA - MARGEM * 2;
     public static final double ALTURA_PREVIA = 168;
 
-    private static final double SUBIDA = 6;   // o cartão escolhido sobe um pouco
+    private static final double SUBIDA = 6;
 
     private static final Color COR_FUNDO = new Color( 52, 38, 96 );
     private static final Color COR_FUNDO_ESCOLHIDO = new Color( 70, 50, 128 );
     private static final Color COR_BORDA = new Color( 96, 84, 150 );
     private static final Color COR_TEXTO_FRACO = new Color( 190, 180, 230 );
-    private static final Color COR_APAGADO = new Color( 29, 19, 54, 110 );   // véu sobre a prévia do cartão não escolhido
+    private static final Color COR_APAGADO = new Color( 29, 19, 54, 110 );
 
     private final String nome;
     private final String[] explicacao;
     private final Previa previa;
-    private final int destino;          // janela que este cartão abre (TrocaDeJanela.TETRIS ou PEGA_PELUCIA)
+    private final int destino;
     private final Rectangle area;
-    private double tempo;               // para o brilho pulsar
+    private double tempo;
 
     public Cartao( String nome, String[] explicacao, Previa previa, int destino, double x, double y ) {
         this.nome = nome;
@@ -52,7 +45,6 @@ public class Cartao {
     }
 
     public void desenhar( EngineFrame e, boolean escolhido ) {
-
         double x = area.x;
         double y = area.y;
         Color corFundo = COR_FUNDO;
@@ -74,7 +66,6 @@ public class Cartao {
         e.drawRoundRectangle( x, y, LARGURA, ALTURA, 0.08, corBorda );
         e.setStrokeLineWidth( 1f );
 
-        // prévia (o recorte não deixa nada da animação passar da borda dela)
         double xPrevia = x + MARGEM;
         double yPrevia = y + MARGEM;
         e.beginScissorMode( xPrevia, yPrevia, LARGURA_PREVIA, ALTURA_PREVIA );
@@ -84,7 +75,6 @@ public class Cartao {
         }
         e.endScissorMode();
 
-        // nome do jogo e explicação, centralizados
         double yTexto = yPrevia + ALTURA_PREVIA;
         e.setFontSize( 22 );
         e.drawText( nome, x + ( LARGURA - e.measureText( nome ) ) / 2.0, yTexto + 16, corNome );
@@ -97,7 +87,6 @@ public class Cartao {
 
     }
 
-    // contorno dourado extra, pulsando, em volta do cartão escolhido
     private void desenharBrilho( EngineFrame e, double x, double y ) {
         int alfa = (int) ( 130 + 70 * Math.sin( tempo * 4 ) );
         e.setStrokeLineWidth( 2f );

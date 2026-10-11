@@ -1,20 +1,15 @@
 package template;
 
-/**
- * @author Yoná Maia & Matheus Ubinha
- */
-
 import br.com.davidbuzatto.jsge.core.engine.EngineFrame;
 import br.com.davidbuzatto.jsge.math.Vector2;
 import java.awt.Color;
 
 public class Pelucia {
-
-    public static final double Raio = 48;   // metade da imagem (96 x 96)
+    public static final double Raio = 48;
     private static final double GRAVIDADE = 1500;
 
     private final TipoPelucia tipo;
-    private final Vector2 posicao;      // centro da pelúcia
+    private final Vector2 posicao;
     private final Vector2 velocidade;
 
     private boolean caindo;

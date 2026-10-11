@@ -6,14 +6,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-/**
- * Fica "escutando" a janela de um jogo aberto pelo menu: o ESC fecha só o
- * jogo (igual ao X) e, quando a janela do jogo fecha, o menu abre de novo.
- *
- * @author Yoná Maia & Matheus Ubinha
- */
 public class VoltaAoMenu extends WindowAdapter implements KeyListener {
-
     private final EngineFrame jogo;
 
     public VoltaAoMenu( EngineFrame jogo ) {
@@ -37,7 +30,7 @@ public class VoltaAoMenu extends WindowAdapter implements KeyListener {
 
     @Override
     public void windowClosed( WindowEvent e ) {
-        TrocaDeJanela troca = new TrocaDeJanela( null, TrocaDeJanela.MENU );   // o jogo já fechou: só abre o menu
+        TrocaDeJanela troca = new TrocaDeJanela( null, TrocaDeJanela.MENU );
         troca.start();
     }
 

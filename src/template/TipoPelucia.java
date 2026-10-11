@@ -3,13 +3,7 @@ package template;
 import br.com.davidbuzatto.jsge.core.engine.EngineFrame;
 import br.com.davidbuzatto.jsge.image.Image;
 
-/**
- * @author Yoná Maia & Matheus Ubinha
- */
-
 public enum TipoPelucia {
-
-    // imagens de 96 x 96 (arte 32 x 32 ampliada 3x)
     SAPO( "Sapo", 0.15, "src/3x/pelucias/sapo.png" ),
     LEAO( "Leão", 0.30, "src/3x/pelucias/leao.png" ),
     COELHO( "Coelho", 0.20, "src/3x/pelucias/coelho.png" ),
@@ -34,7 +28,6 @@ public enum TipoPelucia {
     public double getPeso() { return peso; }
 
     private void carregarImagem( EngineFrame e ) {
-
         if ( tentouCarregar ) {
             return;
         }
@@ -42,19 +35,16 @@ public enum TipoPelucia {
 
         try {
             imagem = e.loadImage( caminhoImagem );
-            
+
         } catch ( Exception ex ) {
             imagem = null;
             System.err.println( "Imagem não carregada: " + caminhoImagem );
-            
+
         }
 
     }
 
-    // desenha a pelúcia centralizada em (cx, cy), num quadrado de lado 2r.
-    // r = Pelucia.Raio usa a imagem no tamanho original; um r menor encolhe (ícones do letreiro)
     public void desenhar( EngineFrame e, double cx, double cy, double r ) {
-
         carregarImagem( e );
 
         if ( imagem != null ) {

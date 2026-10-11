@@ -10,68 +10,54 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
-/**
- * @author Yoná Maia & Matheus Ubinha
- */
-
-
 public class Tela extends EngineFrame {
-
     private static final int LARGURA = 768;
     private static final int ALTURA = 672;
 
-    // arte da máquina (escala 3x): o fundo vai atrás de tudo e o vidro na frente de tudo
-    private static final String CAMINHO_FUNDO_TITULO = "src/3x/maquina/maquina_fundo.png";      // letreiro escrito (tela inicial)
-    private static final String CAMINHO_FUNDO = "src/3x/maquina/maquina_fundo_sem_texto.png";   // letreiro vazio vira o placar
+    private static final String CAMINHO_FUNDO_TITULO = "src/3x/maquina/maquina_fundo.png";
+    private static final String CAMINHO_FUNDO = "src/3x/maquina/maquina_fundo_sem_texto.png";
     private static final String CAMINHO_VIDRO = "src/3x/maquina/maquina_vidro.png";
-
-    // letreiro do topo (a parte escura vai de x 78 a 690 e de y 24 a 96)
 
     private static final double INFO_X = 96, INFO_Y = 30, INFO_L = 160;
     private static final double ORDEM_X = 276, ORDEM_Y = 60, ORDEM_L = 410;
 
-    // avisos
-
     private static final double AVISO_X = 538, AVISO_Y = 27, AVISO_L = 146, AVISO_A = 66;
     private static final double AVISO_DURACAO = 2.0;
 
-    private static final double VIDRO_Y = 132;      // topo do vidro
-    private static final double TRILHO_Y = 150;     // topo do trilho
-    private static final double CHAO_Y = 516;       // nenhuma pelúcia passa daqui
+    private static final double VIDRO_Y = 132;
+    private static final double TRILHO_Y = 150;
+    private static final double CHAO_Y = 516;
 
     private static final double LINHA_FRENTE = CHAO_Y - Pelucia.Raio;
     private static final double LINHA_TRAS = LINHA_FRENTE - 42;
 
     private static final double X_MIN_PELUCIAS = 288, X_MAX_PELUCIAS = 616;
 
-    private static final double Y_REPOUSO = TRILHO_Y + 30;     // cabo recolhido
-    private static final double DESCIDA = Garra.DISTANCIA_PELUCIA;   // do topo da garra até o centro da pelúcia que ela pega
+    private static final double Y_REPOUSO = TRILHO_Y + 30;
+    private static final double DESCIDA = Garra.DISTANCIA_PELUCIA;
     private static final double Y_FUNDO = LINHA_FRENTE - DESCIDA;
-    private static final double GARRA_X_MIN = 174;   // centro da caixa: toda para a esquerda, a garra fica bem em cima dela
-    private static final double GARRA_X_MAX = 615;   // aberta, a garra não atravessa o vidro da direita
-
-    // pilha é a caixa escura a esquerda
+    private static final double GARRA_X_MIN = 174;
+    private static final double GARRA_X_MAX = 615;
 
     private static final double ZONA_X = 108, ZONA_L = 132;
     private static final double ALTURA_ANDAR = 55;
 
-
     private static final double PILHA_Y_BASE = CHAO_Y - Pelucia.Raio + ALTURA_ANDAR / 2.0;
 
-    private static final double TEMPO_SUMIR = 0.3;   // pelúcia retirada da pilha encolhe até sumir
+    private static final double TEMPO_SUMIR = 0.3;
 
     private Controle jogo;
     private Garra garra;
     private ZonaDeEntrega zona;
-    private List<Pelucia> naMaquina;        // pelúcias soltas na máquina
-    private Pelucia peluciaLargada;         // pelúcia que a garra acabou de soltar e ainda está caindo
-    private boolean desempilhando;          // garra subindo com uma pelúcia retirada da pilha
+    private List<Pelucia> naMaquina;
+    private Pelucia peluciaLargada;
+    private boolean desempilhando;
     private boolean comecou;
-    private Image fundo;                    // letreiro vazio (placar)
-    private Image fundoTitulo;              // letreiro com "PEGA PELÚCIA" (tela inicial)
-    private Image vidro;                    // reflexo do vidro e frente da caixa do prêmio
+    private Image fundo;
+    private Image fundoTitulo;
+    private Image vidro;
 
-    private Pelucia sumindo;                // pelúcia que saiu da pilha (só animação)
+    private Pelucia sumindo;
     private double tempoSumindo;
 
     private String[] aviso;
@@ -108,13 +94,11 @@ public class Tela extends EngineFrame {
         popularMaquina();
     }
 
-    private void popularMaquina() { //populariza a máquina coloca 2 de cada animalzinho
-
+    private void popularMaquina() {
         naMaquina.clear();
         List<TipoPelucia> tipos = new ArrayList<>();
 
         for ( TipoPelucia t : TipoPelucia.values() ) {
-
             for ( int k = 0; k < SequenciaAlvo.MAX_POR_TIPO; k++ ) {
                 tipos.add( t );
             }
@@ -122,11 +106,9 @@ public class Tela extends EngineFrame {
 
         Collections.shuffle( tipos );
 
-        // intercaladas: cada pelúcia de trás aparece entre duas da frente
         double passo = ( X_MAX_PELUCIAS - X_MIN_PELUCIAS ) / ( tipos.size() - 1 );
 
         for ( int i = 0; i < tipos.size(); i++ ) {
-
             boolean frente = i % 2 == 0;
             double x = X_MIN_PELUCIAS + i * passo + MathUtils.getRandomValue( -4, 4 );
 
@@ -146,7 +128,6 @@ public class Tela extends EngineFrame {
 
     @Override
     public void update( double delta ) {
-
         if ( tempoAviso > 0 ) {
             tempoAviso -= delta;
         }
@@ -154,7 +135,7 @@ public class Tela extends EngineFrame {
             tempoSumindo -= delta;
         }
 
-        for ( Pelucia p : new ArrayList<>( naMaquina ) ) { // as pelúcias caem mesmo na tela inicial
+        for ( Pelucia p : new ArrayList<>( naMaquina ) ) {
             p.atualizar( delta );
 
             if ( p.consumirPouso() && p == peluciaLargada ) {
@@ -165,7 +146,6 @@ public class Tela extends EngineFrame {
 
         if ( !comecou || jogo.getFase() == Controle.Fase.FIM_DE_JOGO
                       || jogo.getFase() == Controle.Fase.VITORIA ) {
-
             if ( isKeyPressed( KEY_ENTER ) ) {
                 prepararPartida();
                 jogo.iniciar();
@@ -192,7 +172,6 @@ public class Tela extends EngineFrame {
     }
 
     private void acaoDoEspaco() {
-
         if ( garra.getEstado() != Garra.Estado.PARADA || desempilhando ) {
             return;
         }
@@ -205,14 +184,12 @@ public class Tela extends EngineFrame {
         }
 
         if ( jogo.getFase() == Controle.Fase.EMPILHANDO ) {
-
             if ( !sobrePilha ) {
                 garra.iniciarDescida();
 
             }
 
         } else if ( jogo.getFase() == Controle.Fase.DESEMPILHANDO ) {
-
             if ( sobrePilha ) {
                 garra.alinharX( zona.getCentroX() );
 
@@ -226,7 +203,6 @@ public class Tela extends EngineFrame {
     }
 
     private void soltarPelucia( boolean sobrePilha ) {
-
         Pelucia p = garra.soltar();
 
         if ( sobrePilha ) {
@@ -243,11 +219,8 @@ public class Tela extends EngineFrame {
     }
 
     private void atualizarGarra() {
-
         if ( garra.momentoAgarrar() ) {
-
             if ( jogo.getFase() == Controle.Fase.EMPILHANDO ) {
-
                 Pelucia alvo = peluciaProx();
 
                 if ( alvo == null ) {
@@ -262,7 +235,6 @@ public class Tela extends EngineFrame {
                 }
 
             } else if ( jogo.getFase() == Controle.Fase.DESEMPILHANDO ) {
-
                 if ( zona.reconheceColuna( garra.getX() ) ) {
                     int rodadaAntes = jogo.getRodada();
                     Pelucia p = jogo.tentarDesempilhar();
@@ -272,7 +244,7 @@ public class Tela extends EngineFrame {
                         desempilhando = true;
 
                         if ( jogo.getRodada() != rodadaAntes ) {
-                            popularMaquina(); // reabastece a mquina
+                            popularMaquina();
                         }
                     } else {
                         avisar( EngineFrame.ORANGE, "ESCORREGOU!", "Tente de novo" );
@@ -285,14 +257,13 @@ public class Tela extends EngineFrame {
         }
 
         if ( desempilhando && garra.getEstado() == Garra.Estado.PARADA ) {
-            sumindo = garra.soltar();   // a pelúcia sai da máquina: encolhe até sumir
+            sumindo = garra.soltar();
             tempoSumindo = TEMPO_SUMIR;
             desempilhando = false;
 
         }
 
     }
-
 
     private Pelucia peluciaProx() {
         Pelucia melhor = null;
@@ -309,8 +280,7 @@ public class Tela extends EngineFrame {
         return melhor;
     }
 
-    private void tratarPouso( Pelucia p ) { //verifica se é a correta
-
+    private void tratarPouso( Pelucia p ) {
         peluciaLargada = null;
 
         TipoPelucia esperado = null;
@@ -322,7 +292,6 @@ public class Tela extends EngineFrame {
 
         switch ( jogo.soltar( p.getPosicao().x, p.getPosicao().y ) ) {
             case EMPILHADA -> {
-
                 naMaquina.remove( p );
                 avisar( EngineFrame.GREEN, "CERTO!", "+" + (int) Controle.BONUS_TEMPO + " segundos" );
             }
@@ -340,7 +309,7 @@ public class Tela extends EngineFrame {
 
     }
 
-    private void devolverParaMaquina( Pelucia p ) { // reaparece na altura da garra parada e cai
+    private void devolverParaMaquina( Pelucia p ) {
         p.moverPara( MathUtils.getRandomValue( (int) X_MIN_PELUCIAS, (int) X_MAX_PELUCIAS ), Y_REPOUSO + DESCIDA );
         p.soltar( sortearChao() );
     }
@@ -353,12 +322,10 @@ public class Tela extends EngineFrame {
 
     @Override
     public void draw() {
-
-        // ordem da arte: fundo, pelúcias, pilha, garra e, por último, o vidro
         if ( comecou ) {
             drawImage( fundo, 0, 0 );
         } else {
-            drawImage( fundoTitulo, 0, 0 );   // na tela inicial o letreiro mostra o nome do jogo
+            drawImage( fundoTitulo, 0, 0 );
         }
         setStrokeLineWidth( 2f );
 
@@ -373,7 +340,7 @@ public class Tela extends EngineFrame {
         jogo.desenharPilha( this, zona.getCentroX(), PILHA_Y_BASE, ALTURA_ANDAR );
         garra.desenhar( this );
         desenharSumindo();
-        drawImage( vidro, 0, 0 );   // a frente da caixa cobre a pilha: parece que as pelúcias estão dentro dela
+        drawImage( vidro, 0, 0 );
 
         if ( comecou ) {
             jogo.desenharHud( this, INFO_X, INFO_Y, INFO_L, ORDEM_X, ORDEM_Y, ORDEM_L );
@@ -394,14 +361,12 @@ public class Tela extends EngineFrame {
 
     }
 
-    // pelúcia retirada da pilha: encolhe e sobe um pouco até sumir
     private void desenharSumindo() {
-
         if ( sumindo == null || tempoSumindo <= 0 ) {
             return;
         }
 
-        double fracao = tempoSumindo / TEMPO_SUMIR;   // vai de 1 até 0
+        double fracao = tempoSumindo / TEMPO_SUMIR;
         double raio = Pelucia.Raio * fracao;
         double subida = ( 1 - fracao ) * 30;
         sumindo.getTipo().desenhar( this, sumindo.getPosicao().x, sumindo.getPosicao().y - subida, raio );
@@ -409,7 +374,6 @@ public class Tela extends EngineFrame {
     }
 
     private void desenharAviso() {
-
         if ( tempoAviso <= 0 || aviso == null ) {
             return;
         }
@@ -428,12 +392,10 @@ public class Tela extends EngineFrame {
         double y = AVISO_Y + ( AVISO_A - altura ) / 2.0;
 
         for ( int i = 0; i < n; i++ ) {
-
             boolean titulo = i < n - 1 || n == 1;
             int tam = titulo ? 17 : 13;
 
             setFontSize( tam );
-
 
             while ( tam > 9 && measureText( aviso[i] ) > AVISO_L - 12 ) {
                 tam--;
@@ -449,7 +411,6 @@ public class Tela extends EngineFrame {
     }
 
     private void desenharTelaCheia( String titulo, String linha1, String linha2 ) {
-
         fillRectangle( 0, 0, LARGURA, ALTURA, new Color( 0, 0, 0, 170 ) );
 
         setFontSize( 36 );
@@ -464,7 +425,6 @@ public class Tela extends EngineFrame {
         }
 
     }
-
 
     public static void main( String[] args ) {
         new Tela();

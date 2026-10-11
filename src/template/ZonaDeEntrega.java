@@ -3,13 +3,7 @@ package template;
 import br.com.davidbuzatto.jsge.collision.CollisionUtils;
 import br.com.davidbuzatto.jsge.geom.Rectangle;
 
-/**
- * @author Yoná Maia & Matheus Ubinha
- */
-
-
 public class ZonaDeEntrega {
-
     private final Rectangle area;
 
     public ZonaDeEntrega( double x, double y, double largura, double altura ) {

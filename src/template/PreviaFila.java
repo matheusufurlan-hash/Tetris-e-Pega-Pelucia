@@ -6,31 +6,23 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
-/**
- * Prévia do Tetris no menu: uma fila de peças andando da direita para a
- * esquerda. A peça da frente sai e uma nova entra no fim da fila.
- *
- * @author Yoná Maia & Matheus Ubinha
- */
 public class PreviaFila extends Previa {
-
     private static final int PECAS_A_VISTA = 4;
-    private static final double TEMPO_ENTRE_PASSOS = 1.2;   // a fila anda a cada 1,2 segundo
-    private static final double VELOCIDADE_DESLIZE = 3;     // vagas por segundo
+    private static final double TEMPO_ENTRE_PASSOS = 1.2;
+    private static final double VELOCIDADE_DESLIZE = 3;
     private static final double TAMANHO_BLOCO = 14;
 
-    private static final Color COR_FUNDO = new Color( 235, 235, 240 );   // mesmo fundo do tabuleiro do Tetris
+    private static final Color COR_FUNDO = new Color( 235, 235, 240 );
     private static final Color COR_ESTEIRA = new Color( 210, 210, 218 );
     private static final Color COR_LEGENDA = new Color( 120, 120, 130 );
 
     private final Random sorteio;
     private final Queue<TipoPeca> fila;
-    private TipoPeca pecaQueSaiu;   // continua aparecendo enquanto desliza para fora
+    private TipoPeca pecaQueSaiu;
     private double tempoParada;
-    private double deslize;         // quanto as peças ainda vão andar: 1 = uma vaga inteira, 0 = paradas
+    private double deslize;
 
     public PreviaFila( double largura, double altura ) {
-
         super( largura, altura );
         sorteio = new Random();
         fila = new LinkedList<>();
@@ -43,8 +35,6 @@ public class PreviaFila extends Previa {
 
     @Override
     public void atualizar( double delta ) {
-
-        // as peças deslizam até chegar na vaga delas
         if ( deslize > 0 ) {
             deslize -= VELOCIDADE_DESLIZE * delta;
             if ( deslize < 0 ) {
@@ -55,28 +45,25 @@ public class PreviaFila extends Previa {
         tempoParada += delta;
         if ( tempoParada >= TEMPO_ENTRE_PASSOS ) {
             tempoParada = 0;
-            pecaQueSaiu = fila.poll();                   // sai da frente da fila
-            fila.offer( TipoPeca.sortear( sorteio ) );   // entra no fim da fila
-            deslize = 1;                                 // todas andam uma vaga para a frente
+            pecaQueSaiu = fila.poll();
+            fila.offer( TipoPeca.sortear( sorteio ) );
+            deslize = 1;
         }
 
     }
 
     @Override
     public void desenhar( EngineFrame e, double x, double y ) {
-
         e.fillRectangle( x, y, largura, altura, COR_FUNDO );
 
         double vaga = largura / PECAS_A_VISTA;
         double yCentro = y + altura / 2 - 10;
         e.fillRoundRectangle( x + 6, yCentro - 34, largura - 12, 68, 0.3, COR_ESTEIRA );
 
-        // a peça que saiu ainda está passando pela borda da esquerda
         if ( pecaQueSaiu != null && deslize > 0 ) {
             desenharPeca( e, pecaQueSaiu, x + vaga * ( deslize - 0.5 ), yCentro );
         }
 
-        // percorre a fila da frente para o fim, sem remover nada
         int posicao = 0;
         for ( TipoPeca tipo : fila ) {
             desenharPeca( e, tipo, x + vaga * ( posicao + 0.5 + deslize ), yCentro );
@@ -87,9 +74,7 @@ public class PreviaFila extends Previa {
 
     }
 
-    // a fila anda da direita (onde a peça entra) para a esquerda (onde ela sai)
     private void desenharLegenda( EngineFrame e, double x, double y ) {
-
         e.setFontSize( 12 );
 
         e.fillTriangle( x + 12, y + 7, x + 22, y + 1, x + 22, y + 13, COR_LEGENDA );
@@ -101,9 +86,7 @@ public class PreviaFila extends Previa {
 
     }
 
-    // desenha a peça centralizada em (cx, cy), do mesmo jeito que a fila do Tetris
     private void desenharPeca( EngineFrame e, TipoPeca tipo, double cx, double cy ) {
-
         int[][] formato = tipo.getFormato();
 
         int menorLinha = formato[0][0];
